@@ -65,6 +65,10 @@ public class ScoreDao {
 		try {
 			while(scoreSet.next()) {
 				int wins = scoreSet.getInt("wins");
+				//For wins over 10, put it in the "10" category
+				if(wins > 10) {
+					wins = 10;
+				}
 				if(scoreMap.get(wins) == null) {
 					scoreMap.put(wins, new ArrayList<Score>());
 				}
