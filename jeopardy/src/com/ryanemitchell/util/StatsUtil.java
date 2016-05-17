@@ -2,7 +2,6 @@ package com.ryanemitchell.util;
 
 import java.util.List;
 import org.apache.commons.math3.stat.inference.TTest;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.ryanemitchell.entities.Score;
 import com.ryanemitchell.exception.ClientException;
 
