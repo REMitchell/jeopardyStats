@@ -78,6 +78,19 @@ public class ScoreDao {
 		} catch (SQLException e) {
 			throw new ServerException(e);
 		}
+		
+		//This is sort of an optional thing, add in all the scores where the number of wins is 4 or less, from older games
+		query = "SELECT * FROM  (SELECT * FROM (SELECT * FROM scores WHERE final > 0 ORDER BY final DESC) as a GROUP BY gameId ORDER BY final DESC) as winningScores JOIN (SELECT playerId, COUNT(*) as wins FROM (SELECT * FROM (SELECT scores.* FROM scores JOIN games ON scores.gameId = games.id WHERE scores.final > 0 AND STR_TO_DATE(games.date, \"%M %e, %Y\") <= DATE(\"2003-07-20\") ORDER BY final DESC) AS a GROUP BY gameId ORDER BY final DESC) as b GROUP BY playerId) as numberOfWins ON winningScores.playerId = numberOfWins.playerId WHERE numberOfWins.wins < 5;";
+		scoreSet = entityDao.get(query);
+		try {
+			while(scoreSet.next()) {
+				int wins = scoreSet.getInt("wins");
+				scoreMap.get(wins).add(scoreFromResult(scoreSet));
+			}
+			
+		} catch (SQLException e) {
+			throw new ServerException(e);
+		}
 		return scoreMap;
 	}
 	
